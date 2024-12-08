@@ -2,6 +2,11 @@
 
 A full-stack Kanban board application with JWT authentication, allowing users to manage and organize tasks efficiently.
 
+![Kanban Board Screenshot](screenshot.png)
+
+[View Live Demo](https://my-kanban-board.onrender.com)
+
+
 ## Features
 
 - **Secure Authentication**
