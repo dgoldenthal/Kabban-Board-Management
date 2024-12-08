@@ -5,33 +5,17 @@ import { Sequelize } from 'sequelize';
 import { UserFactory } from './user.js';
 import { TicketFactory } from './ticket.js';
 
-const sequelize = process.env.DATABASE_URL ? 
- // For deployment - with SSL
- new Sequelize(process.env.DATABASE_URL, {
-   dialect: 'postgres',
-   dialectOptions: {
-     ssl: {
-       require: true,
-       rejectUnauthorized: false
-     }
-   },
-   logging: false
- })
- : 
- // For local development
- new Sequelize(
-   process.env.DB_NAME || 'kanban_db',
-   process.env.DB_USER || 'postgres',
-   process.env.DB_PASSWORD,
-   {
-     host: 'localhost',
-     dialect: 'postgres',
-     dialectOptions: {
-       decimalNumbers: true,
-     },
-     logging: false
+// For deployment - with SSL
+const sequelize = new Sequelize(process.env.DATABASE_URL || '', {
+ dialect: 'postgres',
+ dialectOptions: {
+   ssl: {
+     require: true,
+     rejectUnauthorized: false
    }
- );
+ },
+ logging: false
+});
 
 // Test database connection
 const testConnection = async () => {
