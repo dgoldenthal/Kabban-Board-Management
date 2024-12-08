@@ -1,4 +1,3 @@
-// src/components/FilterSort.tsx
 import { useState } from 'react';
 import { UserData } from '../interfaces/UserData';
 
@@ -28,41 +27,35 @@ const FilterSort = ({ users, onFilterChange, onSortChange }: FilterSortProps) =>
   return (
     <div className="filter-sort-container">
       <div className="filter-group">
-        <div className="filter-item">
-          <label>Status:</label>
-          <select 
-            onChange={(e) => handleFilterChange('status', e.target.value)}
-            value={filters.status}
-          >
-            <option value="all">All</option>
-            <option value="Todo">Todo</option>
-            <option value="In Progress">In Progress</option>
-            <option value="Done">Done</option>
-          </select>
-        </div>
+        <label>Status:</label>
+        <select 
+          onChange={(e) => handleFilterChange('status', e.target.value)}
+          value={filters.status}
+        >
+          <option value="all">All</option>
+          <option value="Todo">Todo</option>
+          <option value="In Progress">In Progress</option>
+          <option value="Done">Done</option>
+        </select>
 
-        <div className="filter-item">
-          <label>Assigned To:</label>
-          <select 
-            onChange={(e) => handleFilterChange('assignedUser', e.target.value)}
-            value={filters.assignedUser}
-          >
-            <option value="all">All</option>
-            {users.map(user => (
-              <option key={user.id} value={user.username}>
-                {user.username}
-              </option>
-            ))}
-          </select>
-        </div>
+        <label>Assigned To:</label>
+        <select 
+          onChange={(e) => handleFilterChange('assignedUser', e.target.value)}
+          value={filters.assignedUser}
+        >
+          <option value="all">All</option>
+          {users.map(user => (
+            <option key={user.id} value={user.username || ''}>
+              {user.username}
+            </option>
+          ))}
+        </select>
 
-        <div className="filter-item">
-          <label>Sort By:</label>
-          <select onChange={(e) => onSortChange(e.target.value)}>
-            <option value="name">Name</option>
-            <option value="assignee">Assignee</option>
-          </select>
-        </div>
+        <label>Sort By:</label>
+        <select onChange={(e) => onSortChange(e.target.value)}>
+          <option value="name">Name</option>
+          <option value="assignee">Assignee</option>
+        </select>
       </div>
     </div>
   );

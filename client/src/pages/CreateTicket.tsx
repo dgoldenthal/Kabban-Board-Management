@@ -14,35 +14,25 @@ const CreateTicket = () => {
     assignedUserId: 1,
     assignedUser: null
   });
+
   const [errors, setErrors] = useState({
     name: '',
     description: ''
   });
+
   const [users, setUsers] = useState<UserData[]>([]);
   const navigate = useNavigate();
-
-  const getAllUsers = async () => {
-    try {
-      const data = await retrieveUsers();
-      setUsers(data);
-    } catch (err) {
-      console.error('Failed to retrieve user info', err);
-    }
-  };
-
-  useEffect(() => {
-    getAllUsers();
-  }, []);
 
   const validateForm = () => {
     let isValid = true;
     const newErrors = { name: '', description: '' };
 
-    if (!newTicket.name.trim()) {
+    if (!newTicket.name) {
       newErrors.name = 'Ticket name is required';
       isValid = false;
     }
-    if (!newTicket.description.trim()) {
+
+    if (!newTicket.description) {
       newErrors.description = 'Description is required';
       isValid = false;
     }
@@ -50,6 +40,19 @@ const CreateTicket = () => {
     setErrors(newErrors);
     return isValid;
   };
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const data = await retrieveUsers();
+        setUsers(data);
+      } catch (err) {
+        console.error('Failed to retrieve users:', err);
+      }
+    };
+
+    fetchUsers();
+  }, []);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -66,7 +69,9 @@ const CreateTicket = () => {
   const handleTextAreaChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setNewTicket(prev => ({ ...prev, [name]: value }));
-    setErrors(prev => ({ ...prev, [name]: '' }));
+    if (name in errors) {
+      setErrors(prev => ({ ...prev, [name]: '' }));
+    }
   };
 
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -74,57 +79,53 @@ const CreateTicket = () => {
     setNewTicket(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleCancel = () => {
-    navigate('/');
-  };
-
   return (
-    <div className='container'>
-      <form className='form' onSubmit={handleSubmit}>
+    <div className="container">
+      <form className="form" onSubmit={handleSubmit}>
         <h1>Create Ticket</h1>
-        <label htmlFor='tName'>Ticket Name</label>
+        <label>Ticket Name</label>
         {errors.name && <div className="error-message">{errors.name}</div>}
         <textarea
-          id='tName'
-          name='name'
+          name="name"
           value={newTicket.name}
           onChange={handleTextAreaChange}
         />
-        <label htmlFor='tStatus'>Status</label>
+
+        <label>Status</label>
         <select
-          name='status'
-          id='tStatus'
+          name="status"
           value={newTicket.status}
           onChange={handleChange}
         >
-          <option value='Todo'>Todo</option>
-          <option value='In Progress'>In Progress</option>
-          <option value='Done'>Done</option>
+          <option value="Todo">Todo</option>
+          <option value="In Progress">In Progress</option>
+          <option value="Done">Done</option>
         </select>
-        <label htmlFor='tDescription'>Description</label>
+
+        <label>Description</label>
         {errors.description && <div className="error-message">{errors.description}</div>}
         <textarea
-          id='tDescription'
-          name='description'
+          name="description"
           value={newTicket.description}
           onChange={handleTextAreaChange}
         />
-        <label htmlFor='tUserId'>Assigned To</label>
+
+        <label>Assigned To</label>
         <select
-          name='assignedUserId'
-          id='tUserId'
-          value={newTicket.assignedUserId}
+          name="assignedUserId"
+          value={String(newTicket.assignedUserId)}
           onChange={handleChange}
         >
           {users.map((user) => (
-            <option key={user.id} value={user.id}>
+            <option key={user.id} value={String(user.id)}>
               {user.username}
             </option>
           ))}
         </select>
+
         <div className="button-group">
           <button type="submit">Create Ticket</button>
-          <button type="button" onClick={handleCancel}>Cancel</button>
+          <button type="button" onClick={() => navigate('/')}>Cancel</button>
         </div>
       </form>
     </div>
