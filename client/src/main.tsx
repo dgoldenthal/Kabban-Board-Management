@@ -20,22 +20,24 @@ const router = createBrowserRouter([
         element: <Board />
       }, 
       {
-        path: '/edit',
-        element: <EditTicket />
-      },
-      {
-        path: '/create',
+        path: 'create',
         element: <CreateTicket />
       },
       {
-        path: '/login',
+        path: 'edit/:id',
+        element: <EditTicket />
+      },
+      {
+        path: 'login',
         element: <Login />
       }
     ]
   }
-])
+]);
 
 const rootElement = document.getElementById('root');
 if (rootElement) {
-  ReactDOM.createRoot(rootElement).render(<RouterProvider router={router} />);
+  ReactDOM.createRoot(rootElement).render(
+    <RouterProvider router={router} />
+  );
 }

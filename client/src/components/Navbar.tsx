@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import auth from '../utils/auth';
 
 const Navbar = () => {
-  const [ loginCheck, setLoginCheck ] = useState(false);
+  const [loginCheck, setLoginCheck] = useState(false);
 
   const checkLogin = () => {
     if(auth.loggedIn()) {
@@ -12,34 +12,38 @@ const Navbar = () => {
   };
 
   useEffect(() => {
-    console.log(loginCheck);
     checkLogin();
-  }, [loginCheck])
+  }, [loginCheck]);
 
   return (
     <div className='nav'>
       <div className='nav-title'>
-        <Link to='/'>Krazy Kanban Board</Link>
+        <Link to='/'>My Kanban Board</Link>
       </div>
       <ul>
-      {
-        !loginCheck ? (
+        {!loginCheck ? (
           <li className='nav-item'>
             <button type='button'>
               <Link to='/login'>Login</Link>
             </button>
           </li>
         ) : (
-          <li className='nav-item'>
-            <button type='button' onClick={() => {
-              auth.logout();
-            }}>Logout</button>
-          </li>
-        )
-      }
+          <>
+            <li className='nav-item'>
+              <button type='button'>
+                <Link to='/create'>New Ticket</Link>
+              </button>
+            </li>
+            <li className='nav-item'>
+              <button type='button' onClick={() => {
+                auth.logout();
+              }}>Logout</button>
+            </li>
+          </>
+        )}
       </ul>
     </div>
-  )
-}
+  );
+};
 
 export default Navbar;
