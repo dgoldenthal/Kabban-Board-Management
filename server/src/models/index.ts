@@ -2,8 +2,8 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 import { Sequelize } from 'sequelize';
-import { UserFactory } from './user.ts';
-import { TicketFactory } from './ticket.ts';
+import { UserFactory } from './user.js';
+import { TicketFactory } from './ticket.js';
 
 // For deployment - with SSL
 const sequelize = new Sequelize(process.env.DATABASE_URL || '', {
