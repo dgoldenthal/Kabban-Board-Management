@@ -1,9 +1,12 @@
 import { User } from '../models/user.js';
+import bcrypt from 'bcryptjs';
 
 export const seedUsers = async () => {
+  const hashedPassword = await bcrypt.hash('password', 10);
+  
   await User.bulkCreate([
-    { username: 'JollyGuru', password: 'password' },
-    { username: 'SunnyScribe', password: 'password' },
-    { username: 'RadiantComet', password: 'password' },
-  ], { individualHooks: true });
+    { username: 'JollyGuru', password: hashedPassword },
+    { username: 'SunnyScribe', password: hashedPassword },
+    { username: 'RadiantComet', password: hashedPassword },
+  ]);
 };
