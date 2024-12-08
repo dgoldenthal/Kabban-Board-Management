@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: kanban-server
+    env: node
+    buildCommand: cd server && npm install && npm run build
+    startCommand: cd server && npm start
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: kanban-db
+          property: connectionString
+      - key: JWT_SECRET_KEY
+        generateValue: true
