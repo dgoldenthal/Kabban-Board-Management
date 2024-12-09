@@ -1,7 +1,5 @@
 import { defineConfig } from 'vite';
 
-console.log('API URL:', process.env.VITE_API_URL);
-
 export default defineConfig({
   server: {
     proxy: {
@@ -16,6 +14,14 @@ export default defineConfig({
         changeOrigin: true,
         secure: false,
         rewrite: (path) => path.replace(/^\/auth/, '')
+      }
+    }
+  },
+  build: {
+    outDir: 'dist',
+    rollupOptions: {
+      output: {
+        manualChunks: undefined
       }
     }
   }
