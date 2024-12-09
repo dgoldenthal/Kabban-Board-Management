@@ -18,6 +18,8 @@ const FilterSort = ({ users, onFilterChange, onSortChange }: FilterSortProps) =>
     assignedUser: 'all'
   });
 
+  console.log('Users in FilterSort:', users); // Debug log
+
   const handleFilterChange = (name: string, value: string) => {
     const newFilters = { ...filters, [name]: value };
     setFilters(newFilters);
@@ -44,9 +46,9 @@ const FilterSort = ({ users, onFilterChange, onSortChange }: FilterSortProps) =>
           value={filters.assignedUser}
         >
           <option value="all">All</option>
-          {users && users.map(user => (
-            <option key={user.id} value={user.username || ''}>
-              {user.username || ''}
+          {users && users.length > 0 && users.map(user => (
+            <option key={user.id} value={user.username}>
+              {user.username}
             </option>
           ))}
         </select>
