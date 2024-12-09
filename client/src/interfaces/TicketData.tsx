@@ -1,10 +1,10 @@
 import { UserData } from './UserData';
 
 export interface TicketData {
-  id: number;
+  id: number | null;
   name: string;
   description: string;
   status: string;
-  assignedUserId: number;
+  assignedUserId: number | null;
   assignedUser: UserData | null;
 }
