@@ -2,27 +2,28 @@ import { TicketData } from '../interfaces/TicketData';
 import { ApiMessage } from '../interfaces/ApiMessage';
 import Auth from '../utils/auth';
 
-const retrieveTickets = async () => {
+const deleteTicket = async (ticketId: number): Promise<ApiMessage> => {
   try {
     const response = await fetch(
-      `${import.meta.env.VITE_API_URL}/api/tickets/`,
+      `${import.meta.env.VITE_API_URL}/api/tickets/${ticketId}`,
       {
+        method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${Auth.getToken()}`
         }
       }
     );
-    const data = await response.json();
 
-    if(!response.ok) {
-      throw new Error('invalid API response, check network tab!');
+    if (!response.ok) {
+      throw new Error('Failed to delete ticket');
     }
 
+    const data = await response.json();
     return data;
   } catch (err) {
-    console.log('Error from data retrieval: ', err);
-    return [];
+    console.error('Error deleting ticket:', err);
+    return Promise.reject('Could not delete ticket');
   }
 };
 

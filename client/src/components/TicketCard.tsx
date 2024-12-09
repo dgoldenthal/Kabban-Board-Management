@@ -1,8 +1,6 @@
-import { Link } from 'react-router-dom';
-
+import { Link, useNavigate } from 'react-router-dom';
 import { TicketData } from '../interfaces/TicketData';
 import { ApiMessage } from '../interfaces/ApiMessage';
-import { MouseEventHandler } from 'react';
 
 interface TicketCardProps {
   ticket: TicketData;
@@ -10,16 +8,19 @@ interface TicketCardProps {
 }
 
 const TicketCard = ({ ticket, deleteTicket }: TicketCardProps) => {
+  const navigate = useNavigate();
 
-  const handleDelete: MouseEventHandler<HTMLButtonElement> = async (event) => {
-    const ticketId = Number(event.currentTarget.value);
-    if (!isNaN(ticketId)) {
-      try {
-        const data = await deleteTicket(ticketId);
-        return data;
-      } catch (error) {
-        console.error('Failed to delete ticket:', error);
-      }
+  const handleEdit = (e: React.MouseEvent) => {
+    e.preventDefault();
+    navigate(`/edit/${ticket.id}`, { state: { id: ticket.id } });
+  };
+
+  const handleDelete = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    try {
+      await deleteTicket(ticket.id!);
+    } catch (err) {
+      console.error('Failed to delete ticket:', err);
     }
   };
 
@@ -28,8 +29,8 @@ const TicketCard = ({ ticket, deleteTicket }: TicketCardProps) => {
       <h3>{ticket.name}</h3>
       <p>{ticket.description}</p>
       <p>{ticket.assignedUser?.username}</p>
-      <Link to={`/edit/${ticket.id}`} className='editBtn'>Edit</Link>
-      <button type='button' value={String(ticket.id)} onClick={handleDelete} className='deleteBtn'>Delete</button>
+      <button onClick={handleEdit} className='editBtn'>Edit</button>
+      <button onClick={handleDelete} className='deleteBtn'>Delete</button>
     </div>
   );
 };

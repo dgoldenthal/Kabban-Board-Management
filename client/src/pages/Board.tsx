@@ -24,15 +24,6 @@ const Board = () => {
     }
   };
 
-  const fetchUsers = async () => {
-    try {
-      const data = await retrieveUsers();
-      setUsers(data);
-    } catch (err) {
-      console.error('Failed to retrieve users:', err);
-    }
-  };
-
   const fetchTickets = async () => {
     try {
       const data = await retrieveTickets();
@@ -41,6 +32,15 @@ const Board = () => {
     } catch (err) {
       console.error('Failed to retrieve tickets:', err);
       setError(true);
+    }
+  };
+
+  const fetchUsers = async () => {
+    try {
+      const data = await retrieveUsers();
+      setUsers(data);
+    } catch (err) {
+      console.error('Failed to fetch users:', err);
     }
   };
 
@@ -63,8 +63,6 @@ const Board = () => {
       switch (sortOption) {
         case 'name':
           return (a.name || '').localeCompare(b.name || '');
-        case 'status':
-          return (a.status || '').localeCompare(b.status || '');
         case 'assignee':
           return (a.assignedUser?.username || '').localeCompare(b.assignedUser?.username || '');
         default:
@@ -113,14 +111,17 @@ const Board = () => {
             onSortChange={handleSortChange}
           />
           <div className='board-display'>
-            {boardStates.map((status) => (
-              <Swimlane 
-                title={status} 
-                key={status} 
-                tickets={filteredTickets.filter(ticket => ticket.status === status)}
-                deleteTicket={deleteIndvTicket}
-              />
-            ))}
+            {boardStates.map((status) => {
+              const statusTickets = filteredTickets.filter(ticket => ticket.status === status);
+              return (
+                <Swimlane 
+                  title={status} 
+                  key={status} 
+                  tickets={statusTickets} 
+                  deleteTicket={deleteIndvTicket}
+                />
+              );
+            })}
           </div>
         </div>
       )}
