@@ -1,3 +1,5 @@
+import { UserLogin } from "../interfaces/UserLogin";
+
 const login = async (userInfo: UserLogin) => {
   try {
     const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/login`, {
@@ -19,3 +21,5 @@ const login = async (userInfo: UserLogin) => {
     throw error;
   }
 };
+
+export { login };
