@@ -72,7 +72,7 @@ const CreateTicket = () => {
     navigate('/');
   };
 
-  return (
+return (
     <div className='container'>
       <form className='form' onSubmit={handleSubmit}>
         <h1>Create Ticket</h1>
@@ -103,17 +103,17 @@ const CreateTicket = () => {
         <label>Assigned To</label>
         <select
           name='assignedUserId'
-          value={String(newTicket.assignedUserId)}  // Convert to string
+          value={String(newTicket.assignedUserId)}
           onChange={handleChange}
         >
           {users && users.length > 0 ? (
             users.map((user) => (
-              <option key={user.id} value={String(user.id)}>  // Convert to string
+              <option key={user.id} value={user.id}>
                 {user.username}
               </option>
             ))
           ) : (
-            <option value="1">Loading users...</option>  // Default value
+            <option value="1">Loading users...</option>
           )}
         </select>
         <div className='button-group'>
