@@ -12,7 +12,7 @@ const EditTicket = () => {
     name: '',
     description: '',
     status: 'Todo',
-    assignedUserId: 1,
+    assignedUserId: 1,  // Set default value instead of null
     assignedUser: null
   });
   
@@ -28,13 +28,16 @@ const EditTicket = () => {
       }
 
       try {
-        // Fetch both ticket and users data
         const [ticketData, usersData] = await Promise.all([
           retrieveTicket(parseInt(id!)),
           retrieveUsers()
         ]);
         
-        setTicket(ticketData);
+        // Ensure assignedUserId is never null
+        setTicket({
+          ...ticketData,
+          assignedUserId: ticketData.assignedUserId || 1
+        });
         setUsers(usersData);
       } catch (err) {
         console.error('Failed to load data:', err);
@@ -105,7 +108,7 @@ const EditTicket = () => {
         <label>Assigned To</label>
         <select
           name='assignedUserId'
-          value={String(ticket.assignedUserId)}
+          value={String(ticket.assignedUserId || 1)}  // Ensure value is never null
           onChange={handleChange}
         >
           {users && users.length > 0 ? (
