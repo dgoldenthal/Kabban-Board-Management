@@ -1,71 +1,73 @@
 import { useState, useEffect, FormEvent, ChangeEvent } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { retrieveTicket, updateTicket } from '../api/ticketAPI';
+import { retrieveUsers } from '../api/userAPI';
 import { TicketData } from '../interfaces/TicketData';
+import { UserData } from '../interfaces/UserData';
+import Auth from '../utils/auth';
 
 const EditTicket = () => {
-  const [ticket, setTicket] = useState<TicketData | undefined>();
-  const [errors, setErrors] = useState({
+  const [ticket, setTicket] = useState<TicketData>({
+    id: 0,
     name: '',
-    description: ''
+    description: '',
+    status: 'Todo',
+    assignedUserId: 1,
+    assignedUser: null
   });
+  
+  const [users, setUsers] = useState<UserData[]>([]);
   const navigate = useNavigate();
   const { id } = useParams();
 
   useEffect(() => {
-    if (id) {
-      fetchTicket(parseInt(id));
-    }
-  }, [id]);
+    const loadData = async () => {
+      if (!Auth.loggedIn()) {
+        navigate('/login');
+        return;
+      }
 
-  const fetchTicket = async (ticketId: number) => {
-    try {
-      const data = await retrieveTicket(ticketId);
-      setTicket(data);
-    } catch (err) {
-      console.error('Failed to retrieve ticket:', err);
-      navigate('/');
-    }
-  };
+      try {
+        // Fetch both ticket and users data
+        const [ticketData, usersData] = await Promise.all([
+          retrieveTicket(parseInt(id!)),
+          retrieveUsers()
+        ]);
+        
+        setTicket(ticketData);
+        setUsers(usersData);
+      } catch (err) {
+        console.error('Failed to load data:', err);
+        navigate('/');
+      }
+    };
 
-  const validateForm = () => {
-    let isValid = true;
-    const newErrors = { name: '', description: '' };
-
-    if (!ticket?.name?.trim()) {
-      newErrors.name = 'Ticket name is required';
-      isValid = false;
-    }
-    if (!ticket?.description?.trim()) {
-      newErrors.description = 'Description is required';
-      isValid = false;
-    }
-
-    setErrors(newErrors);
-    return isValid;
-  };
+    loadData();
+  }, [id, navigate]);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (validateForm() && ticket && ticket.id) {
-      try {
+    try {
+      if (ticket.id) {
         await updateTicket(ticket.id, ticket);
         navigate('/');
-      } catch (err) {
-        console.error('Failed to update ticket:', err);
       }
+    } catch (err) {
+      console.error('Failed to update ticket:', err);
     }
   };
 
   const handleTextAreaChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     const { name, value } = e.target;
-    setTicket(prev => prev ? ({ ...prev, [name]: value }) : undefined);
-    setErrors(prev => ({ ...prev, [name]: '' }));
+    setTicket(prev => ({ ...prev, [name]: value }));
   };
 
   const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setTicket(prev => prev ? ({ ...prev, [name]: value }) : undefined);
+    setTicket(prev => ({
+      ...prev,
+      [name]: name === 'assignedUserId' ? parseInt(value) : value
+    }));
   };
 
   const handleCancel = () => {
@@ -73,45 +75,54 @@ const EditTicket = () => {
   };
 
   return (
-    <div className="container">
-      {ticket ? (
-        <form className="form" onSubmit={handleSubmit}>
-          <h1>Edit Ticket</h1>
-          <label htmlFor="tName">Ticket Name</label>
-          {errors.name && <div className="error-message">{errors.name}</div>}
-          <textarea
-            id="tName"
-            name="name"
-            value={ticket.name || ''}
-            onChange={handleTextAreaChange}
-          />
-          <label htmlFor="tStatus">Status</label>
-          <select
-            name="status"
-            id="tStatus"
-            value={ticket.status || ''}
-            onChange={handleChange}
-          >
-            <option value="Todo">Todo</option>
-            <option value="In Progress">In Progress</option>
-            <option value="Done">Done</option>
-          </select>
-          <label htmlFor="tDescription">Description</label>
-          {errors.description && <div className="error-message">{errors.description}</div>}
-          <textarea
-            id="tDescription"
-            name="description"
-            value={ticket.description || ''}
-            onChange={handleTextAreaChange}
-          />
-          <div className="button-group">
-            <button type="submit">Save Changes</button>
-            <button type="button" onClick={handleCancel}>Cancel</button>
-          </div>
-        </form>
-      ) : (
-        <div>Loading...</div>
-      )}
+    <div className='container'>
+      <form className='form' onSubmit={handleSubmit}>
+        <h1>Edit Ticket</h1>
+        <label>Ticket Name</label>
+        <textarea
+          name='name'
+          value={ticket.name}
+          onChange={handleTextAreaChange}
+          required
+        />
+        <label>Status</label>
+        <select
+          name='status'
+          value={ticket.status}
+          onChange={handleChange}
+        >
+          <option value='Todo'>Todo</option>
+          <option value='In Progress'>In Progress</option>
+          <option value='Done'>Done</option>
+        </select>
+        <label>Description</label>
+        <textarea
+          name='description'
+          value={ticket.description}
+          onChange={handleTextAreaChange}
+          required
+        />
+        <label>Assigned To</label>
+        <select
+          name='assignedUserId'
+          value={String(ticket.assignedUserId)}
+          onChange={handleChange}
+        >
+          {users && users.length > 0 ? (
+            users.map((user) => (
+              <option key={user.id} value={user.id}>
+                {user.username}
+              </option>
+            ))
+          ) : (
+            <option value="1">Loading users...</option>
+          )}
+        </select>
+        <div className='button-group'>
+          <button type='submit'>Save Changes</button>
+          <button type='button' onClick={handleCancel}>Cancel</button>
+        </div>
+      </form>
     </div>
   );
 };
