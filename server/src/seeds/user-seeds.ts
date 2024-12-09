@@ -4,14 +4,12 @@ import bcrypt from 'bcryptjs';
 export const seedUsers = async () => {
   try {
     const hashedPassword = await bcrypt.hash('password', 10);
-    console.log('Created hashed password:', hashedPassword); // Debug log
+    console.log('Created hashed password:', hashedPassword);
 
     await User.bulkCreate([
       { 
         username: 'RadiantComet',
-        password: hashedPassword,
-        createdAt: new Date(),
-        updatedAt: new Date()
+        password: hashedPassword
       }
     ]);
 
