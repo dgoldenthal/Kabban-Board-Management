@@ -8,8 +8,16 @@ export const seedUsers = async () => {
 
     await User.bulkCreate([
       { 
-        username: 'RadiantComet',
+        username: 'JollyGuru',
         password: hashedPassword
+      },
+
+      { username: 'SunnyScribe', 
+        password: hashedPassword 
+      },
+
+      { username: 'RadiantComet', 
+        password: hashedPassword 
       }
     ]);
 
