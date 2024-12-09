@@ -12,7 +12,7 @@ const CreateTicket = () => {
     name: '',
     description: '',
     status: 'Todo',
-    assignedUserId: 1,
+    assignedUserId: 1,  // Set a default value instead of null
     assignedUser: null
   });
 
@@ -103,17 +103,17 @@ const CreateTicket = () => {
         <label>Assigned To</label>
         <select
           name='assignedUserId'
-          value={newTicket.assignedUserId}
+          value={String(newTicket.assignedUserId)}  // Convert to string
           onChange={handleChange}
         >
           {users && users.length > 0 ? (
             users.map((user) => (
-              <option key={user.id} value={user.id}>
+              <option key={user.id} value={String(user.id)}>  // Convert to string
                 {user.username}
               </option>
             ))
           ) : (
-            <option value="">Loading users...</option>
+            <option value="1">Loading users...</option>  // Default value
           )}
         </select>
         <div className='button-group'>
