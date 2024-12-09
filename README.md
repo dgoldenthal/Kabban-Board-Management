@@ -4,7 +4,7 @@ A full-stack Kanban board application with JWT authentication, allowing users to
 
 ![Kanban Board Screenshot](./assets/Screenshot.png)
 
-[View Live Demo](https://my-kanban-board.onrender.com)
+[View Live Demo](https://kanban-client-jq0u.onrender.com)
 
 
 ## Features
@@ -98,6 +98,7 @@ npm run client:dev
 ```
 
 3. Access the application at [http://localhost:3000]
+   Access the application via render site: [https://kanban-client-jq0u.onrender.com]
 
 ## Default Users
 
