@@ -12,7 +12,7 @@ const CreateTicket = () => {
     name: '',
     description: '',
     status: 'Todo',
-    assignedUserId: 1,  // Set a default value instead of null
+    assignedUserId: null,
     assignedUser: null
   });
 
@@ -25,23 +25,21 @@ const CreateTicket = () => {
         navigate('/login');
         return;
       }
-
       try {
         const fetchedUsers = await retrieveUsers();
         console.log('Fetched users in CreateTicket:', fetchedUsers);
-        
+
         if (fetchedUsers && fetchedUsers.length > 0) {
           setUsers(fetchedUsers);
           setNewTicket(prev => ({
             ...prev,
-            assignedUserId: fetchedUsers[0].id || 1
+            assignedUserId: fetchedUsers[0].id || null
           }));
         }
       } catch (err) {
         console.error('Failed to load users:', err);
       }
     };
-
     loadUsers();
   }, [navigate]);
 
@@ -64,7 +62,7 @@ const CreateTicket = () => {
     const { name, value } = e.target;
     setNewTicket(prev => ({
       ...prev,
-      [name]: name === 'assignedUserId' ? parseInt(value) : value
+      [name]: name === 'assignedUserId' ? (value ? parseInt(value) : null) : value
     }));
   };
 
@@ -72,7 +70,7 @@ const CreateTicket = () => {
     navigate('/');
   };
 
-return (
+  return (
     <div className='container'>
       <form className='form' onSubmit={handleSubmit}>
         <h1>Create Ticket</h1>
@@ -103,7 +101,7 @@ return (
         <label>Assigned To</label>
         <select
           name='assignedUserId'
-          value={String(newTicket.assignedUserId)}
+          value={newTicket.assignedUserId ? String(newTicket.assignedUserId) : ''}
           onChange={handleChange}
         >
           {users && users.length > 0 ? (
@@ -113,7 +111,7 @@ return (
               </option>
             ))
           ) : (
-            <option value="1">Loading users...</option>
+            <option value="">Loading users...</option>
           )}
         </select>
         <div className='button-group'>
