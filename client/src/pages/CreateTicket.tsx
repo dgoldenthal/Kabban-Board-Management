@@ -11,7 +11,7 @@ const CreateTicket = () => {
     name: '',
     description: '',
     status: 'Todo',
-    assignedUserId: 1,
+    assignedUserId: 0,
     assignedUser: null
   });
 
@@ -22,6 +22,7 @@ const CreateTicket = () => {
     const fetchUsers = async () => {
       try {
         const data = await retrieveUsers();
+        console.log('Fetched users:', data); // Debug log
         setUsers(data);
         if (data.length > 0) {
           setNewTicket(prev => ({ ...prev, assignedUserId: data[0].id || 1 }));
@@ -91,14 +92,18 @@ const CreateTicket = () => {
         <label>Assigned To</label>
         <select
           name='assignedUserId'
-          value={String(newTicket.assignedUserId)}
+          value={newTicket.assignedUserId || ''}
           onChange={handleChange}
         >
-          {users.map((user) => (
-            <option key={user.id} value={String(user.id)}>
-              {user.username}
-            </option>
-          ))}
+          {users && users.length > 0 ? (
+            users.map((user) => (
+              <option key={user.id} value={user.id || ''}>
+                {user.username}
+              </option>
+            ))
+          ) : (
+            <option value="">No users available</option>
+          )}
         </select>
         <div className='button-group'>
           <button type='submit'>Create Ticket</button>
