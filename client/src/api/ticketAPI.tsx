@@ -5,7 +5,7 @@ import Auth from '../utils/auth';
 const retrieveTickets = async () => {
   try {
     const response = await fetch(
-      '/api/tickets/',
+      `${import.meta.env.VITE_API_URL}/api/tickets/`,
       {
         headers: {
           'Content-Type': 'application/json',
