@@ -106,7 +106,7 @@ const CreateTicket = () => {
         >
           {users && users.length > 0 ? (
             users.map((user) => (
-              <option key={user.id} value={user.id}>
+              <option key={user.id} value={String(user.id)}>
                 {user.username}
               </option>
             ))
