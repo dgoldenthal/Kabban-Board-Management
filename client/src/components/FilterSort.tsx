@@ -44,9 +44,9 @@ const FilterSort = ({ users, onFilterChange, onSortChange }: FilterSortProps) =>
           value={filters.assignedUser}
         >
           <option value="all">All</option>
-          {users.map(user => (
+          {users && users.map(user => (
             <option key={user.id} value={user.username || ''}>
-              {user.username}
+              {user.username || ''}
             </option>
           ))}
         </select>
