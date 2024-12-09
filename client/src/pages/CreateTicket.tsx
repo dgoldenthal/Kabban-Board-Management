@@ -67,14 +67,14 @@ const CreateTicket = () => {
         <label>Ticket Name</label>
         <textarea
           name='name'
-          value={newTicket.name || ''}
+          value={newTicket.name}
           onChange={handleTextAreaChange}
           required
         />
         <label>Status</label>
         <select
           name='status'
-          value={newTicket.status || ''}
+          value={newTicket.status}
           onChange={handleChange}
         >
           <option value='Todo'>Todo</option>
@@ -84,18 +84,18 @@ const CreateTicket = () => {
         <label>Description</label>
         <textarea
           name='description'
-          value={newTicket.description || ''}
+          value={newTicket.description}
           onChange={handleTextAreaChange}
           required
         />
         <label>Assigned To</label>
         <select
           name='assignedUserId'
-          value={newTicket.assignedUserId || ''}
+          value={String(newTicket.assignedUserId)}
           onChange={handleChange}
         >
           {users.map((user) => (
-            <option key={user.id} value={user.id}>
+            <option key={user.id} value={String(user.id)}>
               {user.username}
             </option>
           ))}
