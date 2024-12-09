@@ -4,6 +4,7 @@ import { createTicket } from '../api/ticketAPI';
 import { retrieveUsers } from '../api/userAPI';
 import { TicketData } from '../interfaces/TicketData';
 import { UserData } from '../interfaces/UserData';
+import Auth from '../utils/auth';
 
 const CreateTicket = () => {
   const [newTicket, setNewTicket] = useState<TicketData>({
@@ -11,7 +12,7 @@ const CreateTicket = () => {
     name: '',
     description: '',
     status: 'Todo',
-    assignedUserId: 0,
+    assignedUserId: 1,
     assignedUser: null
   });
 
@@ -19,20 +20,30 @@ const CreateTicket = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchUsers = async () => {
+    const loadUsers = async () => {
+      if (!Auth.loggedIn()) {
+        navigate('/login');
+        return;
+      }
+
       try {
-        const data = await retrieveUsers();
-        console.log('Fetched users:', data); // Debug log
-        setUsers(data);
-        if (data.length > 0) {
-          setNewTicket(prev => ({ ...prev, assignedUserId: data[0].id || 1 }));
+        const fetchedUsers = await retrieveUsers();
+        console.log('Fetched users in CreateTicket:', fetchedUsers);
+        
+        if (fetchedUsers && fetchedUsers.length > 0) {
+          setUsers(fetchedUsers);
+          setNewTicket(prev => ({
+            ...prev,
+            assignedUserId: fetchedUsers[0].id || 1
+          }));
         }
       } catch (err) {
-        console.error('Failed to retrieve users:', err);
+        console.error('Failed to load users:', err);
       }
     };
-    fetchUsers();
-  }, []);
+
+    loadUsers();
+  }, [navigate]);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -92,17 +103,17 @@ const CreateTicket = () => {
         <label>Assigned To</label>
         <select
           name='assignedUserId'
-          value={newTicket.assignedUserId || ''}
+          value={newTicket.assignedUserId}
           onChange={handleChange}
         >
           {users && users.length > 0 ? (
             users.map((user) => (
-              <option key={user.id} value={user.id || ''}>
+              <option key={user.id} value={user.id}>
                 {user.username}
               </option>
             ))
           ) : (
-            <option value="">No users available</option>
+            <option value="">Loading users...</option>
           )}
         </select>
         <div className='button-group'>
