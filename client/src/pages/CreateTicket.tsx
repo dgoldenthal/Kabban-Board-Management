@@ -8,7 +8,7 @@ import Auth from '../utils/auth';
 
 const CreateTicket = () => {
   const [newTicket, setNewTicket] = useState<TicketData>({
-    id: 0,
+    id: null,
     name: '',
     description: '',
     status: 'Todo',
@@ -101,7 +101,7 @@ const CreateTicket = () => {
         <label>Assigned To</label>
         <select
           name='assignedUserId'
-          value={newTicket.assignedUserId ? String(newTicket.assignedUserId) : ''}
+          value={newTicket.assignedUserId !== null ? String(newTicket.assignedUserId) : ''}
           onChange={handleChange}
         >
           {users && users.length > 0 ? (
