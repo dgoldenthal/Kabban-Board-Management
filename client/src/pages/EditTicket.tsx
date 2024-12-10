@@ -12,7 +12,7 @@ const EditTicket = () => {
     name: '',
     description: '',
     status: 'Todo',
-    assignedUserId: 1,  // Set default value instead of null
+    assignedUserId: 1,
     assignedUser: null
   });
   
@@ -33,10 +33,9 @@ const EditTicket = () => {
           retrieveUsers()
         ]);
         
-        // Ensure assignedUserId is never null
         setTicket({
           ...ticketData,
-          assignedUserId: ticketData.assignedUserId || 1
+          assignedUserId: ticketData.assignedUserId ?? 1
         });
         setUsers(usersData);
       } catch (err) {
@@ -77,6 +76,9 @@ const EditTicket = () => {
     navigate('/');
   };
 
+  // Convert assignedUserId to string and ensure it's never undefined
+  const assignedUserIdString = String(ticket.assignedUserId ?? 1);
+
   return (
     <div className='container'>
       <form className='form' onSubmit={handleSubmit}>
@@ -108,12 +110,12 @@ const EditTicket = () => {
         <label>Assigned To</label>
         <select
           name='assignedUserId'
-          value={String(ticket.assignedUserId || 1)}  // Ensure value is never null
+          value={assignedUserIdString}
           onChange={handleChange}
         >
           {users && users.length > 0 ? (
             users.map((user) => (
-              <option key={user.id} value={user.id}>
+              <option key={user.id} value={String(user.id)}>
                 {user.username}
               </option>
             ))
